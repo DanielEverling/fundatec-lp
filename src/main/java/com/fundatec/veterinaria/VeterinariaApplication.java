@@ -1,17 +1,16 @@
-package com.fundatec.lp;
+package com.fundatec.veterinaria;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication
-@EnableJpaRepositories
 @EnableAutoConfiguration
-public class FundatecLpApplication {
+public class VeterinariaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FundatecLpApplication.class, args);
+		SpringApplication.run(VeterinariaApplication.class, args);
 	}
 
 }

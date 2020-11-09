@@ -1,4 +1,4 @@
-package com.fundatec.lp.commons;
+package com.fundatec.veterinaria.commons;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
