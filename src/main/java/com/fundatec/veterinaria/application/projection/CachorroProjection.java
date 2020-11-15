@@ -1,8 +1,12 @@
-package com.fundatec.veterinaria.controller;
+package com.fundatec.veterinaria.application.projection;
 
 public class CachorroProjection {
 
+    private long cachorroId;
+
     private String nome;
+
+    private long veterinarioId;
 
     private String veterinario;
 

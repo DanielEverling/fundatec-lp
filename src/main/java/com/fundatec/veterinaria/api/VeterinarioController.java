@@ -1,8 +1,11 @@
-package com.fundatec.veterinaria.controller;
+package com.fundatec.veterinaria.api;
 
+import com.fundatec.veterinaria.application.projection.CachorroVeterinarioProjection;
+import com.fundatec.veterinaria.application.projection.VeterinarioProjection;
+import com.fundatec.veterinaria.application.request.VeterinarioRequest;
 import com.fundatec.veterinaria.domain.Cachorro;
 import com.fundatec.veterinaria.domain.Veterinario;
-import com.fundatec.veterinaria.repository.VeterinarioRepository;
+import com.fundatec.veterinaria.infra.repository.VeterinarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,16 +66,16 @@ public class VeterinarioController {
         List<Veterinario> resultado;
 
         //validar nome
-        if (nome != null) {
+        if (nome == null) {
+            resultado = veterinarioRepository.findAll();
+        } else {
             Optional<Veterinario> veterinario = veterinarioRepository.findByNome(nome);
 
-            if(veterinario.isPresent()) {
-                resultado = Collections.singletonList(veterinario.get());
+            if (veterinario.isPresent()) {
+                resultado = List.of(veterinario.get());
             } else {
-                resultado = Collections.emptyList();
+                resultado = List.of();
             }
-        } else {
-            resultado = veterinarioRepository.findAll();
         }
 
         return new ResponseEntity(resultado, HttpStatus.OK);
@@ -81,12 +83,9 @@ public class VeterinarioController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity salvaVeterinario(@RequestBody VeterinarioRequest veterinarioRequest) {
-        Veterinario novoVeterinario = new Veterinario();
+        //Veterinario novoVeterinario = new Veterinario(veterinarioRequest.getNome(), veterinarioRequest.getCpf());
 
-        novoVeterinario.setCpf(veterinarioRequest.getCpf());
-        novoVeterinario.setNome(veterinarioRequest.getNome());
-
-        veterinarioRepository.save(novoVeterinario);
+        //veterinarioRepository.save(novoVeterinario);
 
         return ResponseEntity.ok().build();
     }
@@ -102,9 +101,7 @@ public class VeterinarioController {
                                  @RequestBody Veterinario veterinario) {
         return veterinarioRepository.findById(id)
                 .map(record -> {
-                    record.setNome(veterinario.getNome());
-                    record.setCpf(veterinario.getCpf());
-                    Veterinario updated = veterinarioRepository.save(record);
+                    Veterinario updated = veterinarioRepository.save(veterinario);
                     return ResponseEntity.ok().body(updated);
                 }).orElse(ResponseEntity.notFound().build());
     }

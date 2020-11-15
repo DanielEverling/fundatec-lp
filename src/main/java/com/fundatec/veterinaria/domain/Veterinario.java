@@ -25,45 +25,30 @@ public class Veterinario implements Serializable {
     @OneToMany(mappedBy = "veterinario")
     private List<Cachorro> cachorros;
 
-    public Veterinario() {
+    @Deprecated
+    protected Veterinario() {
     }
 
-    public Veterinario(String nome, String cpf) {
+    public Veterinario(Long id, String nome, String cpf) {
+        this.id = id;
         this.nome = nome;
         this.cpf = cpf;
-
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getNome() {
         return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public String getCpf() {
         return cpf;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
     public List<Cachorro> getCachorros() {
         return cachorros;
-    }
-
-    public void setCachorros(List<Cachorro> cachorros) {
-        this.cachorros = cachorros;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.fundatec.veterinaria.repository;
+package com.fundatec.veterinaria.infra.repository;
 
 import com.fundatec.veterinaria.domain.Cachorro;
 import com.fundatec.veterinaria.domain.Veterinario;
@@ -12,10 +12,11 @@ import java.util.Optional;
 
 @Repository
 public interface VeterinarioRepository extends JpaRepository<Veterinario, Long> {
-    Optional<Veterinario> findByNome(String nome);
+
+    public Optional<Veterinario> findByNome(String nome);
 
     @Query(
             value = "SELECT v.cachorros from Veterinario v where v.id = :id"
     )
-    List<Cachorro> findCachorrosById(@Param("id")Long id);
+    public  List<Cachorro> findCachorrosById(@Param("id")Long id);
 }

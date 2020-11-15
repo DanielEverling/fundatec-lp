@@ -1,4 +1,4 @@
-package com.fundatec.veterinaria.controller;
+package com.fundatec.veterinaria.application.request;
 
 public class CachorroRequest {
 

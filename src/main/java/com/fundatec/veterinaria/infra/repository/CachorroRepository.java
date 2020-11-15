@@ -1,4 +1,4 @@
-package com.fundatec.veterinaria.repository;
+package com.fundatec.veterinaria.infra.repository;
 
 import com.fundatec.veterinaria.domain.Cachorro;
 import org.springframework.data.jpa.repository.JpaRepository;

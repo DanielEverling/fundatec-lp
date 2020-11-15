@@ -32,83 +32,33 @@ public class Cachorro implements  Serializable {
     @JoinColumn(name = "veterinario_id")
     private Veterinario veterinario;
 
+    /*
+     * Construtor usado apenas pelo hibernate
+     */
+    @Deprecated
+    protected Cachorro() {}
 
-    public Cachorro() {}
-
-    public Cachorro(String nome, int idade, String raca, double peso) {
-        this.nome = nome;
-        this.idade = idade;
-        this.raca = raca;
-        this.peso = peso;
-    }
-
-    public String getNome()
-    {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-
-        this.nome = nome;
-    }
-
-    public int getIdade() {
-
-        return idade;
-    }
-
-    public void setIdade(int idade) {
-
-        this.idade = idade;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
+    public Cachorro(Long id, String nome, int idade, String raca, double peso, Veterinario veterinario) {
         this.id = id;
-    }
-
-    public String getRaca() {
-        return raca;
-    }
-
-    public void setRaca(String raca) {
+        this.nome = nome;
+        this.idade = idade;
         this.raca = raca;
-    }
-
-    public double getPeso() {
-        return peso;
-    }
-
-    public void setPeso(double peso) {
         this.peso = peso;
-    }
-
-    public Veterinario getVeterinario() {
-        return veterinario;
-    }
-
-    public void setVeterinario(Veterinario veterinario) {
         this.veterinario = veterinario;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cachorro cachorro = (Cachorro) o;
-        return idade == cachorro.idade &&
-                Double.compare(cachorro.peso, peso) == 0 &&
-                Objects.equals(id, cachorro.id) &&
-                Objects.equals(nome, cachorro.nome) &&
-                Objects.equals(raca, cachorro.raca) &&
-                Objects.equals(veterinario, cachorro.veterinario);
+    public String getNome() {
+        return nome;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nome, idade, raca, peso, veterinario);
-    }
+    public int getIdade() { return idade; }
+
+    public Long getId() { return id; }
+
+    public String getRaca() { return raca; }
+
+    public double getPeso() { return peso; }
+
+    public Veterinario getVeterinario() { return veterinario; }
+
 }

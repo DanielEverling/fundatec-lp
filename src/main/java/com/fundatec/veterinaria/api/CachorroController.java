@@ -1,9 +1,12 @@
-package com.fundatec.veterinaria.controller;
+package com.fundatec.veterinaria.api;
 
+import com.fundatec.veterinaria.application.projection.CachorroProjection;
+import com.fundatec.veterinaria.application.request.CachorroRequest;
+import com.fundatec.veterinaria.application.service.CachorroService;
 import com.fundatec.veterinaria.domain.Cachorro;
 import com.fundatec.veterinaria.domain.Veterinario;
-import com.fundatec.veterinaria.repository.CachorroRepository;
-import com.fundatec.veterinaria.repository.VeterinarioRepository;
+import com.fundatec.veterinaria.infra.repository.CachorroRepository;
+import com.fundatec.veterinaria.infra.repository.VeterinarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,15 +23,15 @@ import java.util.Optional;
 @RequestMapping("/cachorros")
 public class CachorroController {
 
-    @Autowired
-    private CachorroRepository cachorroRepository;
+    private CachorroService cachorroService;
 
-    @Autowired
-    private VeterinarioRepository veterinarioRepository;
+    public CachorroController(CachorroService cachorroService) {
+        this.cachorroService = cachorroService;
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<Cachorro> retornaCachorro(@PathVariable("id") Long id) {
-        Optional<Cachorro> resultado = cachorroRepository.findById(id);
+        Optional<Cachorro> resultado = cachorroService.findById(id);
 
         if(resultado.isPresent()) {
             return new ResponseEntity<Cachorro>(resultado.get(), HttpStatus.OK);
@@ -38,12 +41,12 @@ public class CachorroController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CachorroVeterinarioProjection>> findAllByNome(@RequestParam(value = "nome", required = false) String nome) {
+    public ResponseEntity<List<CachorroProjection>> findAllByNome(@RequestParam(value = "nome", required = false) String nome) {
         List<CachorroProjection> resultado = new ArrayList<>();
 
         //validar nome
         if (nome != null) {
-            Optional<Cachorro> cachorro = cachorroRepository.findByNome(nome);
+            Optional<Cachorro> cachorro = cachorroService.findByNome(nome);
 
             if(cachorro.isPresent()) {
                 resultado.add(new CachorroProjection(cachorro.get().getNome(), cachorro.get().getVeterinario().getNome()));
@@ -51,7 +54,7 @@ public class CachorroController {
                 resultado = Collections.emptyList();
             }
         } else {
-            List<Cachorro> dogs = cachorroRepository.findAll();
+            List<Cachorro> dogs = cachorroService.findAll();
             List<CachorroProjection> finalResultado = resultado;
             dogs.stream().map(record -> {
                  return finalResultado.add(new CachorroProjection(record.getNome(), record.getVeterinario().getNome()));
@@ -63,38 +66,20 @@ public class CachorroController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity salvaCachorro(@RequestBody CachorroRequest cachorroRequest) {
-
-        Veterinario veterinario = veterinarioRepository.getOne(cachorroRequest.getVeterinario());
-
-        Cachorro cachorro = new Cachorro();
-        cachorro.setIdade(cachorroRequest.getIdade());
-        cachorro.setNome(cachorroRequest.getNome());
-        cachorro.setPeso(cachorroRequest.getPeso());
-        cachorro.setRaca(cachorroRequest.getRaca());
-        cachorro.setVeterinario(veterinario);
-
-        cachorroRepository.save(cachorro);
-
+        cachorroService.salvar(cachorroRequest);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable("id") long id,
-                                 @RequestBody Cachorro cachorro) {
-        return cachorroRepository.findById(id)
-                .map(record -> {
-                    record.setNome(cachorro.getNome());
-                    record.setIdade(cachorro.getIdade());
-                    record.setPeso(cachorro.getPeso());
-                    record.setRaca(cachorro.getRaca());
-                    Cachorro updated = cachorroRepository.save(record);
-                    return ResponseEntity.ok().body(updated);
-                }).orElse(ResponseEntity.notFound().build());
+                                 @RequestBody CachorroRequest cachorroRequest) {
+        cachorroService.atualizar(id, cachorroRequest);
+        return ResponseEntity.ok().body(cachorroRequest);
     }
 
     @DeleteMapping("/{id}")
     public String deleteById(@PathVariable("id") long id) {
-        cachorroRepository.deleteById(id);
+        cachorroService.deleteById(id);
         return "deleted";
     }
 

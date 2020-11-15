@@ -1,4 +1,6 @@
-package com.fundatec.veterinaria.controller;
+package com.fundatec.veterinaria.application.projection;
+
+import com.fundatec.veterinaria.application.projection.CachorroVeterinarioProjection;
 
 import java.util.List;
 
