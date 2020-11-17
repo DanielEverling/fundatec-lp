@@ -13,17 +13,17 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class CachorroConverterRequestToDomainTest {
+class ConventerCachorroRequestParaCachorroTest {
 
     @Mock
     private VeterinarioRepository veterinarioRepository;
 
-    private CachorroConverterRequestToDomain cachorroConverterRequestToDomain;
+    private ConventerCachorroRequestParaCachorro cachorroConverterRequestToDomain;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        cachorroConverterRequestToDomain = new CachorroConverterRequestToDomain(veterinarioRepository);
+        cachorroConverterRequestToDomain = new ConventerCachorroRequestParaCachorro(veterinarioRepository);
     }
 
     @Test

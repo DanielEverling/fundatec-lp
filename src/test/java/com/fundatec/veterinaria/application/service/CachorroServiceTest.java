@@ -1,16 +1,18 @@
 package com.fundatec.veterinaria.application.service;
 
-import com.fundatec.veterinaria.application.converter.CachorroConverterRequestToDomain;
+import com.fundatec.veterinaria.application.converter.ConventerCachorroRequestParaCachorro;
+import com.fundatec.veterinaria.application.converter.ConverterCachorroParaCachorroProjection;
+import com.fundatec.veterinaria.application.projection.CachorroProjection;
 import com.fundatec.veterinaria.application.request.CachorroRequest;
 import com.fundatec.veterinaria.domain.Cachorro;
 import com.fundatec.veterinaria.fixture.CachorroFixture;
+import com.fundatec.veterinaria.fixture.CachorroProjectionFixture;
 import com.fundatec.veterinaria.fixture.CachorroRequestFixture;
 import com.fundatec.veterinaria.infra.repository.CachorroRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
@@ -24,14 +26,20 @@ class CachorroServiceTest {
     private CachorroRepository cachorroRepository;
 
     @Mock
-    private CachorroConverterRequestToDomain cachorroConverterRequestToDomain;
+    private ConventerCachorroRequestParaCachorro conventerCachorroRequestParaCachorro;
+
+    @Mock
+    private ConverterCachorroParaCachorroProjection converterCachorroParaCachorroProjection;
 
     private CachorroService cachorroService;
 
     @BeforeEach
     void setUp() {
         initMocks(this);
-        cachorroService = new CachorroService(cachorroConverterRequestToDomain, cachorroRepository);
+        cachorroService = new CachorroService(conventerCachorroRequestParaCachorro,
+                cachorroRepository,
+                converterCachorroParaCachorroProjection
+        );
     }
 
     @Test
@@ -39,9 +47,9 @@ class CachorroServiceTest {
         CachorroRequest cachorroRequest = CachorroRequestFixture.construirCachorroRequest();
         Cachorro cachorro = CachorroFixture.construirCachorro();
 
-        when(cachorroConverterRequestToDomain.converter(cachorroRequest)).thenReturn(cachorro);
+        when(conventerCachorroRequestParaCachorro.converter(cachorroRequest)).thenReturn(cachorro);
         cachorroService.salvar(cachorroRequest);
-        Mockito.verify(cachorroConverterRequestToDomain, times(1)).converter(cachorroRequest);
+        Mockito.verify(conventerCachorroRequestParaCachorro, times(1)).converter(cachorroRequest);
         Mockito.verify(cachorroRepository, times(1)).save(cachorro);
     }
 
@@ -59,7 +67,7 @@ class CachorroServiceTest {
             assertEquals(mensagemEsperada, runtimeException.getMessage());
         }
 
-        Mockito.verify(cachorroConverterRequestToDomain, never()).converter(cachorroRequest);
+        Mockito.verify(conventerCachorroRequestParaCachorro, never()).converter(cachorroRequest);
         Mockito.verify(cachorroRepository, never()).save(cachorro);
     }
 
@@ -69,12 +77,36 @@ class CachorroServiceTest {
         Cachorro cachorro = CachorroFixture.construirCachorro();
 
         when(cachorroRepository.findById(1l)).thenReturn(Optional.of(cachorro));
-        when(cachorroConverterRequestToDomain.converter(1l, cachorroRequest)).thenReturn(cachorro);
+        when(conventerCachorroRequestParaCachorro.converter(1l, cachorroRequest)).thenReturn(cachorro);
 
         cachorroService.atualizar(1l, cachorroRequest);
 
-        Mockito.verify(cachorroConverterRequestToDomain, times(1)).converter(1l, cachorroRequest);
+        Mockito.verify(conventerCachorroRequestParaCachorro, times(1)).converter(1l, cachorroRequest);
         Mockito.verify(cachorroRepository, times(1)).save(cachorro);
+    }
+
+    @Test
+    public void deveRetornarUmCachorroProjectionQuandoEncontrarUmCachorro() {
+        Cachorro cachorro = CachorroFixture.construirCachorro();
+        CachorroProjection cachorroProjection = CachorroProjectionFixture.construirCachorroProjection();
+
+        when(cachorroRepository.findById(1l)).thenReturn(Optional.of(cachorro));
+        when(converterCachorroParaCachorroProjection.converter(cachorro)).thenReturn(cachorroProjection);
+
+        cachorroService.findById(1l);
+
+        Mockito.verify(converterCachorroParaCachorroProjection, times(1)).converter(cachorro);
+    }
+
+    @Test
+    public void deveRetornarUmVazioQuandoNaoEncontrarUmCachorro() {
+        Cachorro cachorro = CachorroFixture.construirCachorro();
+
+        when(cachorroRepository.findById(1l)).thenReturn(Optional.empty());
+
+        cachorroService.findById(1l);
+
+        Mockito.verify(converterCachorroParaCachorroProjection, never()).converter(cachorro);
     }
 
 }

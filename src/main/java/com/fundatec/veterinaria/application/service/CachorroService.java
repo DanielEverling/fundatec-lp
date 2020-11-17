@@ -1,6 +1,8 @@
 package com.fundatec.veterinaria.application.service;
 
-import com.fundatec.veterinaria.application.converter.CachorroConverterRequestToDomain;
+import com.fundatec.veterinaria.application.converter.ConventerCachorroRequestParaCachorro;
+import com.fundatec.veterinaria.application.converter.ConverterCachorroParaCachorroProjection;
+import com.fundatec.veterinaria.application.projection.CachorroProjection;
 import com.fundatec.veterinaria.application.request.CachorroRequest;
 import com.fundatec.veterinaria.domain.Cachorro;
 import com.fundatec.veterinaria.infra.repository.CachorroRepository;
@@ -13,13 +15,18 @@ import java.util.Optional;
 @Service
 public class CachorroService {
 
-    private CachorroConverterRequestToDomain cachorroConverterRequestToDomain;
+    private ConventerCachorroRequestParaCachorro cachorroConverterRequestToDomain;
+
+    private ConverterCachorroParaCachorroProjection converterCachorroParaCachorroProjection;
 
     private CachorroRepository cachorroRepository;
 
-    public CachorroService(CachorroConverterRequestToDomain cachorroConverterRequestToDomain, CachorroRepository cachorroRepository) {
+    public CachorroService(ConventerCachorroRequestParaCachorro cachorroConverterRequestToDomain,
+                           CachorroRepository cachorroRepository,
+                           ConverterCachorroParaCachorroProjection converterCachorroParaCachorroProjection) {
         this.cachorroConverterRequestToDomain = cachorroConverterRequestToDomain;
         this.cachorroRepository = cachorroRepository;
+        this.converterCachorroParaCachorroProjection = converterCachorroParaCachorroProjection;
     }
 
     @Transactional
@@ -53,8 +60,14 @@ public class CachorroService {
         return cachorroRepository.findByNome(nome);
     }
 
-    public Optional<Cachorro> findById(Long id) {
-        return cachorroRepository.findById(id);
+    public Optional<CachorroProjection> findById(Long id) {
+        Optional<Cachorro> existeCachorro = cachorroRepository.findById(id);
+
+        if (existeCachorro.isEmpty()) {
+            return Optional.empty();
+        }
+        CachorroProjection cachorroProjection = converterCachorroParaCachorroProjection.converter(existeCachorro.get());
+        return Optional.of(cachorroProjection);
     }
 
 }

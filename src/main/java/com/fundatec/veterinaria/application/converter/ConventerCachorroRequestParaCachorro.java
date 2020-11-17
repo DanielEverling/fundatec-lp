@@ -7,11 +7,11 @@ import com.fundatec.veterinaria.infra.repository.VeterinarioRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CachorroConverterRequestToDomain {
+public class ConventerCachorroRequestParaCachorro {
 
     private VeterinarioRepository veterinarioRepository;
 
-    public CachorroConverterRequestToDomain(VeterinarioRepository veterinarioRepository) {
+    public ConventerCachorroRequestParaCachorro(VeterinarioRepository veterinarioRepository) {
         this.veterinarioRepository = veterinarioRepository;
     }
 

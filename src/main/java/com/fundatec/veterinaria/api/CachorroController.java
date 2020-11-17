@@ -30,13 +30,13 @@ public class CachorroController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Cachorro> retornaCachorro(@PathVariable("id") Long id) {
-        Optional<Cachorro> resultado = cachorroService.findById(id);
+    public ResponseEntity<CachorroProjection> retornaCachorro(@PathVariable("id") Long id) {
+        Optional<CachorroProjection> resultado = cachorroService.findById(id);
 
-        if(resultado.isPresent()) {
-            return new ResponseEntity<Cachorro>(resultado.get(), HttpStatus.OK);
+        if (resultado.isPresent()) {
+            return new ResponseEntity<CachorroProjection>(resultado.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<Cachorro>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<CachorroProjection>(HttpStatus.NO_CONTENT);
         }
     }
 
