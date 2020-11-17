@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -109,4 +110,29 @@ class CachorroServiceTest {
         Mockito.verify(converterCachorroParaCachorroProjection, never()).converter(cachorro);
     }
 
+    @Test
+    public void deveBuscarCachorroPorNomeQuandoNomeEhInformado() {
+        Cachorro cachorro = CachorroFixture.construirCachorro();
+        CachorroProjection cachorroProjection = CachorroProjectionFixture.construirCachorroProjection();
+
+        when(cachorroRepository.findByNome("Bilu")).thenReturn(Optional.of(cachorro));
+        when(converterCachorroParaCachorroProjection.converter(cachorro)).thenReturn(cachorroProjection);
+
+        List<CachorroProjection> projections = cachorroService.findAllByName("Bilu");
+        assertEquals(1, projections.size());
+        assertEquals(cachorroProjection, projections.stream().findFirst().get());
+    }
+
+    @Test
+    public void deveBuscarCachorroPorNomeQuandoNomeNaoEhInforamado() {
+        Cachorro cachorro = CachorroFixture.construirCachorro();
+        CachorroProjection cachorroProjection = CachorroProjectionFixture.construirCachorroProjection();
+
+        when(cachorroRepository.findAll()).thenReturn(List.of(cachorro));
+        when(converterCachorroParaCachorroProjection.converter(cachorro)).thenReturn(cachorroProjection);
+
+        List<CachorroProjection> projections = cachorroService.findAllByName(null);
+        assertEquals(1, projections.size());
+        assertEquals(cachorroProjection, projections.stream().findFirst().get());
+    }
 }

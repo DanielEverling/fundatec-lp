@@ -9,7 +9,7 @@ public class CachorroProjectionFixture {
     public static CachorroProjection construirCachorroProjection() {
         return new CachorroProjection(
                 "Bilu",
-                "Jose Riberiro"
+                "Jose Ribeiro"
         );
     }
 }

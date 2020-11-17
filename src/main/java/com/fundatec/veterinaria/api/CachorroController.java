@@ -42,25 +42,7 @@ public class CachorroController {
 
     @GetMapping
     public ResponseEntity<List<CachorroProjection>> findAllByNome(@RequestParam(value = "nome", required = false) String nome) {
-        List<CachorroProjection> resultado = new ArrayList<>();
-
-        //validar nome
-        if (nome != null) {
-            Optional<Cachorro> cachorro = cachorroService.findByNome(nome);
-
-            if(cachorro.isPresent()) {
-                resultado.add(new CachorroProjection(cachorro.get().getNome(), cachorro.get().getVeterinario().getNome()));
-            } else {
-                resultado = Collections.emptyList();
-            }
-        } else {
-            List<Cachorro> dogs = cachorroService.findAll();
-            List<CachorroProjection> finalResultado = resultado;
-            dogs.stream().map(record -> {
-                 return finalResultado.add(new CachorroProjection(record.getNome(), record.getVeterinario().getNome()));
-            });
-        }
-
+        List<CachorroProjection> resultado = cachorroService.findAllByName(nome);
         return new ResponseEntity(resultado, HttpStatus.OK);
     }
 

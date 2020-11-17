@@ -9,6 +9,8 @@ import com.fundatec.veterinaria.infra.repository.CachorroRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,14 +54,6 @@ public class CachorroService {
         cachorroRepository.deleteById(id);
     }
 
-    public List<Cachorro> findAll() {
-        return cachorroRepository.findAll();
-    }
-
-    public Optional<Cachorro> findByNome(String nome) {
-        return cachorroRepository.findByNome(nome);
-    }
-
     public Optional<CachorroProjection> findById(Long id) {
         Optional<Cachorro> existeCachorro = cachorroRepository.findById(id);
 
@@ -70,4 +64,19 @@ public class CachorroService {
         return Optional.of(cachorroProjection);
     }
 
+    public List<CachorroProjection> findAllByName(String nome) {
+        List<CachorroProjection> resultado = new ArrayList<>();
+        if (nome == null) {
+            List<Cachorro> dogs = cachorroRepository.findAll();
+            dogs.stream().forEach( record -> {
+                resultado.add(converterCachorroParaCachorroProjection.converter(record));
+            });
+            return resultado;
+        }
+        Optional<Cachorro> cachorro = cachorroRepository.findByNome(nome);
+        if(cachorro.isPresent()) {
+            resultado.add(new CachorroProjection(cachorro.get().getNome(), cachorro.get().getVeterinario().getNome()));
+        }
+        return resultado;
+    }
 }

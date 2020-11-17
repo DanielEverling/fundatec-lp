@@ -1,12 +1,10 @@
 package com.fundatec.veterinaria.application.projection;
 
+import java.util.Objects;
+
 public class CachorroProjection {
 
-    private long cachorroId;
-
     private String nome;
-
-    private long veterinarioId;
 
     private String veterinario;
 
@@ -21,5 +19,19 @@ public class CachorroProjection {
 
     public String getVeterinario() {
         return veterinario;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CachorroProjection that = (CachorroProjection) o;
+        return Objects.equals(nome, that.nome) &&
+                Objects.equals(veterinario, that.veterinario);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nome, veterinario);
     }
 }

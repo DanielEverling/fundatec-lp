@@ -83,9 +83,9 @@ public class VeterinarioController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity salvaVeterinario(@RequestBody VeterinarioRequest veterinarioRequest) {
-        //Veterinario novoVeterinario = new Veterinario(veterinarioRequest.getNome(), veterinarioRequest.getCpf());
+        Veterinario novoVeterinario = new Veterinario(null, veterinarioRequest.getNome(), veterinarioRequest.getCpf());
 
-        //veterinarioRepository.save(novoVeterinario);
+        veterinarioRepository.save(novoVeterinario);
 
         return ResponseEntity.ok().build();
     }
